@@ -27,48 +27,45 @@
         const lobbyCode = urlParams.get('lobbyCode');
         const username = localStorage.getItem('username');
 
-        // Ссылка на лобби в Firebase
-        const lobbyRef = ref(database, 'lobbies/' + lobbyCode);
-
-        // Обновляем интерфейс, когда данные лобби меняются
-        onValue(lobbyRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const lobbyData = snapshot.val();
-                document.getElementById('lobby-code').textContent = `Код лобби: ${lobbyCode}`;
-                document.getElementById('players').innerHTML = '';
-
-                // Отображаем игроков
-                Object.keys(lobbyData.players).forEach((player) => {
-                    const playerElement = document.createElement('div');
-                    playerElement.textContent = `${player} - ${lobbyData.players[player].ready ? 'Готов' : 'Не готов'}`;
-                    document.getElementById('players').appendChild(playerElement);
-                });
-            }
-        });
-
-        // Обработчик для кнопки готовности
-        document.getElementById('ready-button').addEventListener('click', () => {
-            set(ref(database, 'lobbies/' + lobbyCode + '/players/' + username + '/ready'), true);
-        });
-
-        // Обработчик для выбора режима игры
-        document.getElementById('game-mode').addEventListener('change', (e) => {
-            const gameMode = e.target.value;
-            set(ref(database, 'lobbies/' + lobbyCode + '/gameMode'), gameMode);
-        });
+        
+            
     </script>
 </head>
 <body>
-    <h1>Лобби</h1>
-    <div id="lobby-code"></div>
-    <div id="players"></div>
-    <button id="ready-button">Готов</button>
+    <div class="container">
+        <h1>Лобби</h1>
 
-    <label for="game-mode">Выберите режим игры:</label>
-    <select id="game-mode">
-        <option value="waiting">Ожидание</option>
-        <option value="minigame1">Мини-игра 1</option>
-        <option value="minigame2">Мини-игра 2</option>
-    </select>
+        <div class="lobby-container">
+            <p class="lobby-code">Код лобби: <span id="lobby-code-display">12345</span></p>
+        </div>
+
+        <!-- Информация о хосте -->
+        <div class="host-info">
+            <p>Хост лобби: <span id="host-name">Player 1</span></p>
+        </div>
+
+        <!-- Таблица игроков -->
+        <table class="players-table">
+            <thead>
+                <tr>
+                    <th>Имя игрока</th>
+                    <th>Статус готовности</th>
+                </tr>
+            </thead>
+            <tbody id="players-list">
+                <!-- Игроки будут добавляться здесь -->
+            </tbody>
+        </table>
+
+        <!-- Выбор режима игры -->
+        <div class="mode-selection">
+            <label for="game-mode">Выберите режим:</label>
+            <select id="game-mode">
+                <option value="minigame1">Мини-игра 1</option>
+                <option value="minigame2">Мини-игра 2</option>
+            </select>
+            <button id="start-game">Начать игру</button>
+        </div>
+
 </body>
 </html>
