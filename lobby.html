@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лобби</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZqT98d7V8gpCeNma7Aos3u7ol5_wOug4",
+            authDomain: "games-63197.firebaseapp.com",
+            databaseURL: "https://games-63197-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "games-63197",
+            storageBucket: "games-63197.appspot.com",
+            messagingSenderId: "217470228668",
+            appId: "1:217470228668:web:30844724050d278a7358b9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Получаем код лобби из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const lobbyCode = urlParams.get('lobbyCode');
+        const username = localStorage.getItem('username');
+
+        // Ссылка на лобби в Firebase
+        const lobbyRef = ref(database, 'lobbies/' + lobbyCode);
+
+        // Обновляем интерфейс, когда данные лобби меняются
+        onValue(lobbyRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const lobbyData = snapshot.val();
+                document.getElementById('lobby-code').textContent = `Код лобби: ${lobbyCode}`;
+                document.getElementById('players').innerHTML = '';
+
+                // Отображаем игроков
+                Object.keys(lobbyData.players).forEach((player) => {
+                    const playerElement = document.createElement('div');
+                    playerElement.textContent = `${player} - ${lobbyData.players[player].ready ? 'Готов' : 'Не готов'}`;
+                    document.getElementById('players').appendChild(playerElement);
+                });
+            }
+        });
+
+        // Обработчик для кнопки готовности
+        document.getElementById('ready-button').addEventListener('click', () => {
+            set(ref(database, 'lobbies/' + lobbyCode + '/players/' + username + '/ready'), true);
+        });
+
+        // Обработчик для выбора режима игры
+        document.getElementById('game-mode').addEventListener('change', (e) => {
+            const gameMode = e.target.value;
+            set(ref(database, 'lobbies/' + lobbyCode + '/gameMode'), gameMode);
+        });
+    </script>
+</head>
+<body>
+    <h1>Лобби</h1>
+    <div id="lobby-code"></div>
+    <div id="players"></div>
+    <button id="ready-button">Готов</button>
+
+    <label for="game-mode">Выберите режим игры:</label>
+    <select id="game-mode">
+        <option value="waiting">Ожидание</option>
+        <option value="minigame1">Мини-игра 1</option>
+        <option value="minigame2">Мини-игра 2</option>
+    </select>
+</body>
+</html>

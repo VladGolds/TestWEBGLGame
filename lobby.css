@@ -1,0 +1,135 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Стили для лобби */
+.lobby-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lobby-actions {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.lobby-actions button {
+    width: 200px;
+}
+
+/* Стили для таблицы игроков */
+.players-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.players-table th, .players-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.players-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.players-table td.ready {
+    color: green;
+}
+
+.players-table td.not-ready {
+    color: red;
+}
+
+/* Стили для выбора режима */
+.mode-selection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mode-selection select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.mode-selection button {
+    width: 150px;
+}
+
+/* Стили для кодов лобби */
+.lobby-code {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.lobby-code input {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.join-button {
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+}
+
+.join-button:hover {
+    background-color: #0056b3;
+}

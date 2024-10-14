@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Multiplayer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic-Tac-Toe Multiplayer</h1>
+    <div id="gameBoard" class="game-board"></div>
+
+    <script>
+        // Инициализация игрового поля
+        const gameBoard = document.getElementById('gameBoard');
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.index = i;
+            cell.addEventListener('click', handleCellClick);
+            gameBoard.appendChild(cell);
+        }
+
+        function handleCellClick(event) {
+            const cell = event.target;
+            if (!cell.textContent) {
+                cell.textContent = 'X';  // временная метка для хода
+            }
+        }
+    </script>
+</body>
+</html>

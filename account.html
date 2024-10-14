@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="account.css">
+    <script type="module">
+        // Импорт необходимых функций из Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getDatabase, set, get, ref, push, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+        // Ваши настройки Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZqT98d7V8gpCeNma7Aos3u7ol5_wOug4",
+            authDomain: "games-63197.firebaseapp.com",
+            databaseURL: "https://games-63197-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "games-63197",
+            storageBucket: "games-63197.appspot.com",
+            messagingSenderId: "217470228668",
+            appId: "1:217470228668:web:30844724050d278a7358b9"
+        };
+
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Обработчик отправки формы регистрации
+        document.getElementById('registration-form')?.addEventListener('submit', (e) => {
+            e.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+
+            // Сохраняем данные в Firebase с использованием имени пользователя в качестве ID
+            const usersRef = ref(database, 'users/' + username);
+
+            // Сохраняем данные в Firebase
+            set(usersRef, {
+                username: username,
+                password: password,
+                email: email,
+                role: 'user'
+            }).then(() => {
+                alert("Регистрация прошла успешно!");
+                localStorage.setItem('username', username); // Сохраняем имя пользователя в localStorage
+                document.getElementById('registration-form').reset(); // Очищаем форму
+                updateUI(username); // Обновляем UI с новым именем пользователя
+                window.location.href = "index.html";
+            }).catch((error) => {
+                console.error("Ошибка регистрации: ", error);
+                alert("Ошибка регистрации. Попробуйте еще раз.");
+            });
+        });
+
+        // Обработчик отправки формы авторизации
+        document.getElementById('login-form')?.addEventListener('submit', (e) => {
+            e.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            // Проверяем данные пользователя в Firebase
+            const usersRef = ref(database);
+            get(child(usersRef, `users/${username}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === password) {
+                        alert("Вход выполнен успешно!");
+                        localStorage.setItem('username', username); // Сохраняем имя пользователя в localStorage
+                        updateUI(username); // Обновляем UI с новым именем пользователя
+                        window.location.href = "index.html";
+                    } else {
+                        alert("Неверный пароль. Попробуйте еще раз.");
+                    }
+                } else {
+                    alert("Пользователь не найден.");
+                }
+            }).catch((error) => {
+                console.error("Ошибка при входе: ", error);
+                alert("Ошибка при входе. Попробуйте еще раз.");
+            });
+        });
+
+        // Функция для обновления UI
+        function updateUI(username) {
+            const authButton = document.getElementById('auth-button');
+            authButton?.remove(); // Полностью удаляем элемент из DOM
+
+            const welcomeMessage = document.createElement('span');
+            welcomeMessage.textContent = `Добро пожаловать, ${username}!`;
+            document.querySelector('.auth-buttons')?.appendChild(welcomeMessage); // Добавляем элемент с приветствием
+        }
+
+        // Проверка имени пользователя при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username');
+            if (username) {
+                console.log("Имя пользователя при входе:", username);
+                updateUI(username);
+            }
+        });
+
+        // Функция для переключения форм
+        document.getElementById('switch-to-login')?.addEventListener('click', () => {
+            document.getElementById('registration-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        });
+
+        document.getElementById('switch-to-register')?.addEventListener('click', () => {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('registration-form').style.display = 'block';
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #ff0000;">
+            <a href="index.html" style="text-decoration: none; color: inherit;">Test Films</a>
+        </h1>
+        <form id="registration-form">
+            <h2>Регистрация</h2>
+            <input type="text" id="username" placeholder="Введите свой логин" required>
+            <input type="password" id="password" placeholder="Введите свой пароль" required>
+            <input type="email" id="email" placeholder="Введите свою почту" required>
+            <button type="submit">Зарегистрироваться</button>
+            <p id="switch-to-login" style="cursor: pointer; color: blue; text-decoration: underline;">У меня уже есть аккаунт</p>
+        </form>
+
+        <form id="login-form" style="display: none;">
+            <h2>Авторизация</h2>
+            <input type="text" id="login-username" placeholder="Введите свой логин" required>
+            <input type="password" id="login-password" placeholder="Введите свой пароль" required>
+            <button type="submit">Войти</button>
+            <p id="switch-to-register" style="cursor: pointer; color: blue; text-decoration: underline;">Назад к регистрации</p>
+        </form>
+    </div>
+</body>
+</html>
